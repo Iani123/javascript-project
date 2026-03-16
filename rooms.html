@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><div class="logo-badge">STEP<br>ACADEMY</div><div class="logo-text">Hotel Booking</div></a><nav class="nav-links"><a href="index.html">Home</a><a class="active" href="rooms.html">Rooms</a><a href="hotels.html">Hotels</a><a href="booked.html">Booked Rooms</a></nav></div></header>
+  <main class="container section">
+    <div class="section-head"><div><h1 class="section-title">Browse Rooms</h1></div></div>
+    <div class="filter-shell panel">
+      <div class="filter-bar">
+        <div class="field"><label>City</label><select id="city-filter"><option>Tbilisi</option></select></div>
+        <div class="field"><label>Room type</label><select id="type-filter"><option value="">All</option><option>Deluxe</option><option>Superior</option><option>Executive</option><option>Suite</option><option>Junior</option><option>Twin</option></select></div>
+        <div class="field"><label>Max price</label><input id="price-filter" type="number" min="0" placeholder="No limit"></div>
+        <div class="field"><label>Guests</label><input id="guest-filter" type="number" min="1" placeholder="Any"></div>
+        <div class="filter-actions"><button id="apply-filters" class="btn btn-secondary">Apply</button><button id="reset-filters" class="btn btn-ghost" style="color:#162033;border:1px solid var(--line);background:#fff">Reset</button></div>
+      </div>
+    </div>
+    <div class="hero-mini panel">
+      <div class="stat"><small>Loaded rooms</small><b id="rooms-count">0</b></div>
+      <div class="stat"><small>Matching</small><b id="rooms-matching">0</b></div>
+      <div class="stat"><small>City</small><b id="rooms-city">Tbilisi</b></div>
+    </div>
+    <section class="section"><div id="rooms-list" class="grid grid-3"></div></section>
+  </main>
+  <script src="assets/app.js"></script>
+  <script>
+    let allRooms = [];
+    async function populateCities(){
+      try{
+        const cities = await getCities();
+        const select = document.getElementById('city-filter');
+        select.innerHTML = cities.map(c => `<option>${c}</option>`).join('');
+      }catch{}
+    }
+    async function loadRooms(){
+      const city = document.getElementById('city-filter').value || 'Tbilisi';
+      document.getElementById('rooms-city').textContent = city;
+      const wrap = document.getElementById('rooms-list');
+      wrap.innerHTML = '<div class="notice">Loading rooms...</div>';
+      try{
+        allRooms = await getAllRoomsFromHotels(city);
+        document.getElementById('rooms-count').textContent = allRooms.length;
+        applyFilters();
+      }catch(err){
+        wrap.innerHTML = `<div class="error">${err.message}</div>`;
+      }
+    }
+    function applyFilters(){
+      const price = Number(document.getElementById('price-filter').value || 0);
+      const guests = Number(document.getElementById('guest-filter').value || 0);
+      const type = document.getElementById('type-filter').value.trim().toLowerCase();
+      const wrap = document.getElementById('rooms-list');
+      const filtered = allRooms.filter(r => (!price || Number(r.pricePerNight) <= price) && (!guests || Number(r.maximumGuests || 0) >= guests) && (!type || String(r.category || '').toLowerCase().includes(type) || String(r.name || '').toLowerCase().includes(type)));
+      document.getElementById('rooms-matching').textContent = filtered.length;
+      wrap.innerHTML = filtered.length ? filtered.map(r => roomCard(r, true)).join('') : '<div class="empty">No rooms matched these filters.</div>';
+      wireBookingButtons(new Map(filtered.map(r => [Number(r.id), r])));
+    }
+    (async function(){
+      await populateCities();
+      const params = new URLSearchParams(location.search);
+      if(params.get('guests')) document.getElementById('guest-filter').value = params.get('guests');
+      document.getElementById('apply-filters').addEventListener('click', applyFilters);
+      document.getElementById('reset-filters').addEventListener('click', () => {
+        ['price-filter','guest-filter','type-filter'].forEach(id => document.getElementById(id).value = '');
+        applyFilters();
+      });
+      document.getElementById('city-filter').addEventListener('change', loadRooms);
+      await loadRooms();
+    })();
+  </script>
+</body>
+</html>

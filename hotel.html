@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><div class="logo-badge">STEP<br>ACADEMY</div><div class="logo-text">Hotel Booking</div></a><nav class="nav-links"><a href="index.html">Home</a><a href="rooms.html">Rooms</a><a class="active" href="hotels.html">Hotels</a><a href="booked.html">Booked Rooms</a></nav></div></header>
+  <section id="hotel-hero" class="hero" style="min-height:460px;background-image:url('https://images.trvl-media.com/lodging/16000000/15840000/15835100/15835033/41cbdcb1.jpg?impolicy=resizecrop&rw=1200&ra=fit')">
+    <div class="container hero-content" style="min-height:460px;align-items:flex-end"><div class="hero-copy"><span class="kicker">Hotel details</span><h1 id="hotel-name">Hotel</h1><p id="hotel-city">Tbilisi</p></div></div>
+  </section>
+  <main class="container">
+    <div id="hotel-info" class="hotel-hero-info"></div>
+    <div id="hotel-gallery" class="gallery"></div>
+    <section class="section"><div class="section-head"><div><h2 class="section-title">Available Rooms</h2><p class="section-sub">Rooms inside this hotel only.</p></div></div><div id="hotel-rooms" class="grid grid-3"></div></section>
+  </main>
+  <script src="assets/app.js"></script>
+  <script>
+    (async function(){
+      const id = getParam('id') || '2';
+      try{
+        const hotel = await getHotel(id);
+        document.title = hotel.name;
+        document.getElementById('hotel-name').textContent = hotel.name;
+        document.getElementById('hotel-city').textContent = hotel.city;
+        document.getElementById('hotel-hero').style.backgroundImage = `url('${hotel.featuredImage || HERO_IMAGE}')`;
+        document.getElementById('hotel-info').innerHTML = `<div class="section-head" style="margin-bottom:0"><div><h2 class="section-title" style="font-size:34px">${escapeHtml(hotel.name)}</h2><p class="section-sub">${escapeHtml(hotel.address || '')}</p></div><span class="badge">${escapeHtml(hotel.city || '')}</span></div>`;
+        const allImages = (hotel.rooms || []).flatMap(r => r.images || []).slice(0,6);
+        const gallery = document.getElementById('hotel-gallery');
+        gallery.innerHTML = allImages.length ? allImages.map(img => `<img src="${escapeHtml(img.source)}" alt="hotel image">`).join('') : `<img src="${escapeHtml(hotel.featuredImage || HERO_IMAGE)}"><img src="${escapeHtml(hotel.featuredImage || HERO_IMAGE)}"><img src="${escapeHtml(hotel.featuredImage || HERO_IMAGE)}">`;
+        document.getElementById('hotel-rooms').innerHTML = (hotel.rooms || []).map(r => roomCard({...r, category:getRoomCategory(r), hotelName: hotel.name, hotelId: hotel.id}, false)).join('');
+      }catch(err){ document.querySelector('main').innerHTML = `<div class="error" style="margin:30px auto">Could not load hotel: ${err.message}</div>`; }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><div class="logo-badge">STEP<br>ACADEMY</div><div class="logo-text">Hotel Booking</div></a><nav class="nav-links"><a href="index.html">Home</a><a href="rooms.html">Rooms</a><a href="hotels.html">Hotels</a><a class="active" href="booked.html">Booked Rooms</a></nav></div></header>
+  <main class="container section">
+    <div class="section-head"><div><h1 class="section-title">Booked Rooms</h1></div></div>
+    <div class="table-wrap panel">
+      <table>
+        <thead><tr><th>ID</th><th>Room</th><th>Customer</th><th>Check In</th><th>Check Out</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody id="bookings-body"><tr><td colspan="7">Loading...</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="assets/app.js"></script>
+  <script>
+    (async function(){
+      const body = document.getElementById('bookings-body');
+      try{
+        const bookings = await getBookings();
+        body.innerHTML = bookings.slice(0,200).map(b => `
+          <tr>
+            <td>${b.id ?? ''}</td>
+            <td>${b.roomID ?? ''}</td>
+            <td>${escapeHtml(b.customerName || '')}</td>
+            <td>${fmtDate(b.checkInDate)}</td>
+            <td>${fmtDate(b.checkOutDate)}</td>
+            <td>${fmtMoney(b.totalPrice)}</td>
+            <td><span class="status-pill ${b.isConfirmed ? 'status-confirmed':'status-pending'}">${b.isConfirmed ? 'Confirmed':'Pending'}</span></td>
+          </tr>`).join('');
+      }catch(err){ body.innerHTML = `<tr><td colspan="7">Could not load bookings: ${escapeHtml(err.message)}</td></tr>`; }
+    })();
+  </script>
+</body>
+</html>

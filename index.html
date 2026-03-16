@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a class="logo" href="index.html"><div class="logo-badge">STEP<br>ACADEMY</div><div class="logo-text">Hotel Booking</div></a>
+      <nav class="nav-links">
+        <a class="active" href="index.html">Home</a>
+        <a href="rooms.html">Rooms</a>
+        <a href="hotels.html">Hotels</a>
+        <a href="booked.html">Booked Rooms</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" style="background-image:url('https://images.trvl-media.com/lodging/16000000/15840000/15835100/15835033/41cbdcb1.jpg?impolicy=resizecrop&rw=1200&ra=fit')">
+    <div class="container hero-content">
+      <div class="hero-copy">
+        <span class="kicker">Luxury stays in Tbilisi</span>
+        <h1>✩✩✩✩✩ Five Star Hotels ✩✩✩✩✩</h1>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="hotels.html">See hotels</a>
+          <a class="btn btn-ghost" href="#booking-shell">Book now</a>
+        </div>
+        <div class="hero-mini panel">
+          <div class="stat"><small>City</small><b>Tbilisi</b></div>
+          <div class="stat"><small>Hotels</small><b id="hero-hotel-count">3</b></div>
+          <div class="stat"><small>Rooms</small><b id="hero-room-count">0</b></div>
+        </div>
+      </div>
+      <aside class="hero-booking">
+        <h3>Find your stay</h3>
+        <p>Quick search rooms by date and guests, then jump straight to booking.</p>
+        <div class="quick-search">
+          <div class="field"><label>Check in</label><input id="hero-checkin" type="date"></div>
+          <div class="field"><label>Check out</label><input id="hero-checkout" type="date"></div>
+          <div class="field"><label>Guests</label><input id="hero-guests" type="number" min="1" value="2"></div>
+          <a class="btn btn-secondary" id="hero-search-btn" href="rooms.html">Search rooms</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <main class="container main-offset">
+    <section class="section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Guests Favorite Rooms</h2>
+        </div>
+        <a class="btn btn-secondary" href="rooms.html">Browse all rooms</a>
+      </div>
+      <div id="featured-rooms" class="grid grid-3"></div>
+    </section>
+
+    <section class="section" id="booking-shell">
+      <div class="layout">
+        <div class="booking-shell panel">
+          <div class="booking-header">
+            <div class="section-head" style="margin-bottom:0">
+              <div>
+                <h2 class="section-title" style="font-size:34px">Quick Booking</h2>
+              </div>
+            </div>
+          </div>
+          <div class="booking-form-wrap">
+            <div id="booking-message" class="hidden"></div>
+            <form id="booking-form">
+              <div class="grid grid-2">
+                <div class="field">
+                  <label>Room</label>
+                  <select id="booking-room" name="roomID" required>
+                    <option value="">Select a room</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Total price</label>
+                  <input type="number" name="totalPrice" min="0" readonly>
+                </div>
+                <div class="field">
+                  <label>Check in</label>
+                  <input type="datetime-local" name="checkInDate" required>
+                </div>
+                <div class="field">
+                  <label>Check out</label>
+                  <input type="datetime-local" name="checkOutDate" required>
+                </div>
+                <div class="field">
+                  <label>Customer name</label>
+                  <input type="text" name="customerName" required>
+                </div>
+                <div class="field">
+                  <label>Customer ID</label>
+                  <input type="text" name="customerId" placeholder="Optional">
+                </div>
+                <div class="field">
+                  <label>Phone</label>
+                  <input type="text" name="customerPhone" required>
+                </div>
+                <div class="field">
+                  <label>Status</label>
+                  <select name="isConfirmed"><option value="true" selected>Confirmed</option><option value="false">Pending</option></select>
+                </div>
+              </div>
+              <div class="actions">
+                <button class="btn btn-primary" type="submit">Book room</button>
+                <a class="btn btn-ghost" style="color:#162033;border:1px solid var(--line);background:#fff" href="rooms.html">See all rooms</a>
+              </div>
+            </form>
+          </div>
+        </div>
+        <aside class="booking-summary panel">
+          <div class="summary-card">
+            <h4>Selected Room</h4>
+            <div id="booking-selected-room">No room selected yet</div>
+            <div class="summary-list">
+              <div class="summary-item"><span>Category</span><strong id="booking-category">—</strong></div>
+              <div class="summary-item"><span>Price per night</span><strong id="booking-price-per-night">—</strong></div>
+              <div class="summary-item"><span>Stay length</span><strong id="booking-nights">Select dates</strong></div>
+            </div>
+          </div>
+          <div class="total-box">
+            <div class="small">Estimated total</div>
+            <div class="total-value" id="booking-total-live">$0</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="topbar"><div class="container nav"><a class="logo" href="index.html"><div class="logo-badge">STEP<br>ACADEMY</div><div class="logo-text">Hotel Booking</div></a><nav class="nav-links"><a href="index.html">Home</a><a href="rooms.html">Rooms</a><a class="active" href="hotels.html">Hotels</a><a href="booked.html">Booked Rooms</a></nav></div></header>
+  <main class="container section">
+    <div class="section-head"><div><h1 class="section-title">Hotels in Tbilisi</h1></div></div>
+    <div id="hotels-list" class="grid grid-3"></div>
+  </main>
+  <script src="assets/app.js"></script>
+  <script>
+    (async function(){
+      const wrap = document.getElementById('hotels-list');
+      try{ const hotels = await getHotels('Tbilisi'); wrap.innerHTML = hotels.map(hotelCard).join(''); }
+      catch(err){ wrap.innerHTML = `<div class="error">Could not load hotels: ${err.message}</div>`; }
+    })();
+  </script>
+</body>
+</html>
